@@ -6,19 +6,14 @@ import com.kurianski.comidinhasbank.model.request.UserCreationRequest;
 import com.kurianski.comidinhasbank.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public User createUser(UserCreationRequest userCreationRequest) {
         userCreationRequest.setPassword(passwordEncoder.encode(userCreationRequest.getPassword()));
