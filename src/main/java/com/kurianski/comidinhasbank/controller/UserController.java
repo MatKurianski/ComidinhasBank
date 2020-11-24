@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping(value="/")
 @RequiredArgsConstructor
@@ -14,7 +16,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/sign-up")
-    public ResponseEntity createUser(@RequestBody @NonNull UserCreationRequest userCreationRequest) {
+    public ResponseEntity createUser(@RequestBody @NonNull @Valid UserCreationRequest userCreationRequest) {
         return ResponseEntity.ok(userService.createUser(userCreationRequest));
     }
 
