@@ -29,12 +29,12 @@ public class User {
     private String lastName;
 
     @CPF
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     @NotBlank
     private String cpf;
 
     @Email
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     @NotBlank
     private String email;
 
