@@ -1,5 +1,6 @@
 package com.kurianski.comidinhasbank.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kurianski.comidinhasbank.model.enumerables.Gender;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -31,6 +32,7 @@ public class User {
     @CPF
     @Column(nullable = false, unique = true)
     @NotBlank
+    @JsonIgnore
     private String cpf;
 
     @Email
@@ -40,6 +42,7 @@ public class User {
 
     @Column(nullable = false)
     @NotBlank
+    @JsonIgnore
     private String password;
 
     @Enumerated(EnumType.STRING)
