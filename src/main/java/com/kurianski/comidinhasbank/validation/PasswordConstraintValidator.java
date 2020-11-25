@@ -1,4 +1,4 @@
-package com.kurianski.comidinhasbank.validator;
+package com.kurianski.comidinhasbank.validation;
 
 import org.passay.*;
 

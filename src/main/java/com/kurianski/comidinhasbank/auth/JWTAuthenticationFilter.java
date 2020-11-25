@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static com.kurianski.comidinhasbank.contant.SecurityConstants.*;
+import static com.kurianski.comidinhasbank.constant.SecurityConstants.*;
 
 @RequiredArgsConstructor
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {

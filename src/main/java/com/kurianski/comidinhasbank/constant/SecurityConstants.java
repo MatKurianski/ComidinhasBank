@@ -1,4 +1,4 @@
-package com.kurianski.comidinhasbank.contant;
+package com.kurianski.comidinhasbank.constant;
 
 public class SecurityConstants {
     public static final String SECRET = "comidinhasbank";

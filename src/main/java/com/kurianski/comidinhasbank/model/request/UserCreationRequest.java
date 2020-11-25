@@ -1,34 +1,37 @@
 package com.kurianski.comidinhasbank.model.request;
 
 import com.kurianski.comidinhasbank.model.enumerables.Gender;
-import com.kurianski.comidinhasbank.validator.ValidPassword;
+import com.kurianski.comidinhasbank.validation.ValidPassword;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import org.hibernate.validator.constraints.br.CPF;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
+@NoArgsConstructor
 @Data
 public class UserCreationRequest {
-    @NonNull
+    @NotBlank
     private String firstName;
 
-    @NonNull
+    @NotBlank
     private String lastName;
 
-    @NonNull
     @CPF
+    @NotBlank
     private String cpf;
 
-    @NonNull
     @Email
+    @NotBlank
     private String email;
 
     @ValidPassword
     private String password;
 
-    @NonNull
     @Enumerated(EnumType.STRING)
     private Gender gender;
 }

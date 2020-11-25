@@ -1,14 +1,12 @@
 package com.kurianski.comidinhasbank.model;
 
 import com.kurianski.comidinhasbank.model.enumerables.Gender;
-import com.kurianski.comidinhasbank.validator.ValidPassword;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.br.CPF;
 
 import javax.persistence.*;
-import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
@@ -32,6 +30,7 @@ public class User {
 
     @CPF
     @Column(nullable = false)
+    @NotBlank
     private String cpf;
 
     @Email

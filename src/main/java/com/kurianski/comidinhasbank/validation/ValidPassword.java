@@ -1,4 +1,4 @@
-package com.kurianski.comidinhasbank.validator;
+package com.kurianski.comidinhasbank.validation;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
