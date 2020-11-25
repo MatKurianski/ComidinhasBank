@@ -1,6 +1,5 @@
 package com.kurianski.comidinhasbank.validation;
 
-import com.kurianski.comidinhasbank.model.User;
 import com.kurianski.comidinhasbank.model.enumerables.Gender;
 import com.kurianski.comidinhasbank.model.request.UserCreationRequest;
 import org.junit.Before;
