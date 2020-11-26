@@ -4,6 +4,7 @@ import com.kurianski.comidinhasbank.model.request.UserCreationRequest;
 import com.kurianski.comidinhasbank.service.UserService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +15,10 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value="/")
-@RequiredArgsConstructor
 public class UserController {
-    private final UserService userService;
+
+    @Autowired
+    private UserService userService;
 
     @PostMapping("/sign-up")
     public ResponseEntity createUser(@RequestBody @NonNull @Valid UserCreationRequest userCreationRequest) {

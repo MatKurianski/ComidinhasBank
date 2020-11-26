@@ -3,6 +3,7 @@ package com.kurianski.comidinhasbank;
 import com.kurianski.comidinhasbank.auth.JWTAuthenticationFilter;
 import com.kurianski.comidinhasbank.auth.JWTAuthorizationFilter;
 import com.kurianski.comidinhasbank.service.UserDetailsServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
