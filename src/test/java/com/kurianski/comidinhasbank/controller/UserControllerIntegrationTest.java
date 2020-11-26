@@ -1,7 +1,6 @@
 package com.kurianski.comidinhasbank.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kurianski.comidinhasbank.ComidinhasbankApplication;
 import com.kurianski.comidinhasbank.model.User;
 import com.kurianski.comidinhasbank.model.enumerables.Gender;
 import com.kurianski.comidinhasbank.model.request.UserCreationRequest;
@@ -10,30 +9,27 @@ import com.kurianski.comidinhasbank.service.UserService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.hamcrest.core.StringContains;
-import org.hibernate.validator.constraints.br.CPF;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @AutoConfigureMockMvc
 public class UserControllerIntegrationTest {
 
