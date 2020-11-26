@@ -6,12 +6,14 @@ import com.kurianski.comidinhasbank.model.enumerables.Gender;
 import com.kurianski.comidinhasbank.model.request.UserCreationRequest;
 import com.kurianski.comidinhasbank.repository.UserRepository;
 import com.kurianski.comidinhasbank.service.UserService;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -23,10 +25,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -44,8 +48,7 @@ public class UserControllerUnitTest {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    @Test
-    public void createValidUser_thenReturnUserJson() throws Exception {
+    private UserCreationRequest makeValidUser() {
         UserCreationRequest newUser = new UserCreationRequest();
         newUser.setFirstName("Matheus");
         newUser.setLastName("Kurianski");
@@ -53,17 +56,33 @@ public class UserControllerUnitTest {
         newUser.setGender(Gender.MALE);
         newUser.setCpf("76370811092");
         newUser.setEmail("matheuskurianski@usp.br");
+        return newUser;
+    }
 
-        when(userService.createUser(any(UserCreationRequest.class))).thenReturn(any(User.class));
+    @Before
+    public void setUp() {
+        UserCreationRequest userCreationRequest = makeValidUser();
+        User user = new User();
+        BeanUtils.copyProperties(userCreationRequest, user);
+        when(userService.createUser(userCreationRequest)).thenReturn(user);
+    }
 
-        String userJson = objectMapper.writeValueAsString(newUser);
+    @Test
+    public void createValidUser_thenReturnUserJson() throws Exception {
+        UserCreationRequest userCreationRequest = makeValidUser();
 
-        MvcResult result = mockMvc.perform(
+        String userJson = objectMapper.writeValueAsString(userCreationRequest);
+
+        mockMvc.perform(
                 post("/sign-up")
+                        .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userJson)
-                ).andExpect(status().isOk())
-                .andReturn();
-
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstName").value("Matheus"))
+                .andExpect(jsonPath("$.lastName").value("Kurianski"))
+                .andExpect(jsonPath("$.gender").value("MALE"))
+                .andExpect(jsonPath("$.email").value("matheuskurianski@usp.br"));
     }
 }
