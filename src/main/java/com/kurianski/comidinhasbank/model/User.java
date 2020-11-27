@@ -11,6 +11,7 @@ import org.hibernate.validator.constraints.br.CPF;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -49,6 +50,10 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Gender gender;
+
+    @Column(columnDefinition = "float DEFAULT 0", precision = 10, scale = 2)
+    @JsonIgnore
+    private BigDecimal amount = BigDecimal.ZERO;
 
     @CreationTimestamp
     private Date createdAt;
