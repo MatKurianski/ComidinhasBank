@@ -1,5 +1,6 @@
 package com.kurianski.comidinhasbank.controller;
 
+import com.kurianski.comidinhasbank.model.Transaction;
 import com.kurianski.comidinhasbank.model.request.TransferMoneyRequest;
 import com.kurianski.comidinhasbank.model.request.UserCreationRequest;
 import com.kurianski.comidinhasbank.service.TransferMoneyService;
@@ -30,7 +31,7 @@ public class TransferMoneyController {
     @PostMapping("/cpf")
     public ResponseEntity transferMoneyWithCpf(@RequestBody @NonNull @Valid TransferMoneyRequest transferMoneyRequest) {
         String fromCpf = SecurityContextHolder.getContext().getAuthentication().getName();
-        transferMoneyService.transferMoneyWithCpf(fromCpf, transferMoneyRequest);
-        return ResponseEntity.status(200).body("Feito!");
+        Transaction result = transferMoneyService.transferMoneyWithCpf(fromCpf, transferMoneyRequest);
+        return ResponseEntity.ok(result);
     }
 }

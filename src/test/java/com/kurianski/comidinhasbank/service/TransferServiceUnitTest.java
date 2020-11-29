@@ -1,10 +1,12 @@
 package com.kurianski.comidinhasbank.service;
 
 import com.kurianski.comidinhasbank.exception.InsufficientFundsException;
+import com.kurianski.comidinhasbank.model.Transaction;
 import com.kurianski.comidinhasbank.model.User;
 import com.kurianski.comidinhasbank.model.enumerables.Gender;
 import com.kurianski.comidinhasbank.model.request.TransferMoneyRequest;
 import com.kurianski.comidinhasbank.model.request.UserCreationRequest;
+import com.kurianski.comidinhasbank.repository.TransactionRepository;
 import com.kurianski.comidinhasbank.repository.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,12 +26,15 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class TransferServiceUnitTest {
 
-    private final String FIRST_USER_CPF = "1812681054";
+    private final String FIRST_USER_CPF = "18126881054";
 
     private final String SECOND_USER_CPF = "00639863027";
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private TransactionRepository transactionRepository;
 
     @InjectMocks
     private TransferMoneyService transferMoneyService;

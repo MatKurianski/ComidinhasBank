@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -32,6 +33,9 @@ public class TransferControllerIntegrationTest {
 
     private final String FIRST_USER_CPF = "32647721084";
     private final String SECOND_USER_CPF = "44428587058";
+
+    private final String FIRST_USER_EMAIL = "matheus@teste.com";
+    private final String SECOND_USER_EMAIL = "matheus2@teste.com";
 
     @Autowired
     private MockMvc mockMvc;
@@ -45,7 +49,7 @@ public class TransferControllerIntegrationTest {
         User newUser = new User();
         newUser.setFirstName("Matheus");
         newUser.setLastName("Teste");
-        newUser.setEmail("matheus@teste.com");
+        newUser.setEmail(FIRST_USER_EMAIL);
         newUser.setCpf(FIRST_USER_CPF);
         newUser.setPassword("aS31@aa#2");
         newUser.setGender(Gender.MALE);
@@ -57,7 +61,7 @@ public class TransferControllerIntegrationTest {
         User me = makeValidUser();
         User other = makeValidUser();
 
-        other.setEmail("matheus2@teste.com");
+        other.setEmail(SECOND_USER_EMAIL);
         other.setCpf(SECOND_USER_CPF);
 
         me.setAmount(BigDecimal.valueOf(50));
@@ -74,18 +78,16 @@ public class TransferControllerIntegrationTest {
 
         String transferMoneyJson = objectMapper.writeValueAsString(transferMoneyRequest);
 
-        String response = mockMvc.perform(
+        mockMvc.perform(
                 post("/transfer/cpf")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(transferMoneyJson)
                 )
                 .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        assertThat(response, equalTo("Feito!"));
+                .andExpect(jsonPath("$.amount").value(transferMoneyRequest.getAmount()))
+                .andExpect(jsonPath("$.fromUser.email").value(FIRST_USER_EMAIL))
+                .andExpect(jsonPath("$.toUser.email").value(SECOND_USER_EMAIL));
     }
 
     @Test

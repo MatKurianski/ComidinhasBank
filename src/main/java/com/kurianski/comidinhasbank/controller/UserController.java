@@ -13,6 +13,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 
+import static com.kurianski.comidinhasbank.constant.SecurityConstants.SIGN_UP_URL;
+
 @RestController
 @RequestMapping(value="/")
 public class UserController {
@@ -20,7 +22,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/sign-up")
+    @PostMapping(SIGN_UP_URL)
     public ResponseEntity createUser(@RequestBody @NonNull @Valid UserCreationRequest userCreationRequest) {
         try {
             return ResponseEntity.ok(userService.createUser(userCreationRequest));

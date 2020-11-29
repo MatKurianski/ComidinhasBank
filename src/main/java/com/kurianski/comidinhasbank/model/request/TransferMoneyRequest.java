@@ -2,16 +2,16 @@ package com.kurianski.comidinhasbank.model.request;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
-import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Getter
 @RequiredArgsConstructor
 public class TransferMoneyRequest {
+    @NotNull
     private final String toCpf;
 
     @DecimalMin(value = "0.0", inclusive = false, message = "Não é possível inserir números negativos")
