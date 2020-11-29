@@ -7,6 +7,8 @@ import com.kurianski.comidinhasbank.model.request.TransferMoneyRequest;
 import com.kurianski.comidinhasbank.repository.TransactionRepository;
 import com.kurianski.comidinhasbank.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,11 +24,14 @@ public class TransferMoneyService {
     @Autowired
     private TransactionRepository transactionRepository;
 
-    public Transaction transferMoneyWithCpf(String fromCpf, TransferMoneyRequest transferMoneyRequest) {
-        User fromUser = userRepository.getUserByCpf(fromCpf);
-        User toUser = userRepository.getUserByCpf(transferMoneyRequest.getToCpf());
+    public Transaction transferMoneyWithCpf(TransferMoneyRequest transferMoneyRequest) {
+        String fromCpf = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        if(fromUser.getAmount().compareTo(transferMoneyRequest.getAmount()) < 0) throw new InsufficientFundsException();
+        User fromUser = userRepository.findByCpf(fromCpf);
+        User toUser = userRepository.findByCpf(transferMoneyRequest.getToCpf());
+
+        if(fromUser == null || toUser == null) throw new UsernameNotFoundException("Algum dos usuários fornecidos não existe");
+        else if(fromUser.getAmount().compareTo(transferMoneyRequest.getAmount()) < 0) throw new InsufficientFundsException();
 
         BigDecimal amount = transferMoneyRequest.getAmount();
 
@@ -44,6 +49,6 @@ public class TransferMoneyService {
         transaction.setFromUser(fromUser);
         transaction.setToUser(toUser);
         transaction.setAmount(amount);
-        return transactionRepository.save(transaction);
+        return this.transactionRepository.save(transaction);
     }
 }

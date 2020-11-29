@@ -1,6 +1,9 @@
 package com.kurianski.comidinhasbank.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.kurianski.comidinhasbank.model.User;
 import com.kurianski.comidinhasbank.model.request.UserCreationRequest;
+import com.kurianski.comidinhasbank.model.view.UserView;
 import com.kurianski.comidinhasbank.service.UserService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +26,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping(SIGN_UP_URL)
+    @JsonView(UserView.Detailed.class)
     public ResponseEntity createUser(@RequestBody @NonNull @Valid UserCreationRequest userCreationRequest) {
         try {
             return ResponseEntity.ok(userService.createUser(userCreationRequest));

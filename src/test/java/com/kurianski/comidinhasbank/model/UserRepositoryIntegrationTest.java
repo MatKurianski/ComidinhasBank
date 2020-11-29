@@ -38,7 +38,7 @@ public class UserRepositoryIntegrationTest {
         User valid = makeValidUser();
         entityManager.persistAndFlush(valid);
 
-        User found = userRepository.getUserByCpf(valid.getCpf());
+        User found = userRepository.findByCpf(valid.getCpf());
         assertThat(found, equalTo(valid));
     }
 }

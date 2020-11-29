@@ -19,8 +19,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,8 +32,8 @@ public class TransferControllerIntegrationTest {
     private final String FIRST_USER_CPF = "32647721084";
     private final String SECOND_USER_CPF = "44428587058";
 
-    private final String FIRST_USER_EMAIL = "matheus@teste.com";
-    private final String SECOND_USER_EMAIL = "matheus2@teste.com";
+    private User firstUser;
+    private User secondUser;
 
     @Autowired
     private MockMvc mockMvc;
@@ -49,7 +47,7 @@ public class TransferControllerIntegrationTest {
         User newUser = new User();
         newUser.setFirstName("Matheus");
         newUser.setLastName("Teste");
-        newUser.setEmail(FIRST_USER_EMAIL);
+        newUser.setEmail("matheus@teste.com");
         newUser.setCpf(FIRST_USER_CPF);
         newUser.setPassword("aS31@aa#2");
         newUser.setGender(Gender.MALE);
@@ -58,17 +56,17 @@ public class TransferControllerIntegrationTest {
 
     @Before
     public void setUp() {
-        User me = makeValidUser();
-        User other = makeValidUser();
+        this.firstUser = makeValidUser();
+        this.secondUser = makeValidUser();
 
-        other.setEmail(SECOND_USER_EMAIL);
-        other.setCpf(SECOND_USER_CPF);
+        this.secondUser.setEmail("matheus2@teste.com");
+        this.secondUser.setCpf(SECOND_USER_CPF);
 
-        me.setAmount(BigDecimal.valueOf(50));
-        other.setAmount(BigDecimal.valueOf(30));
+        this.firstUser.setAmount(BigDecimal.valueOf(50));
+        this.secondUser.setAmount(BigDecimal.valueOf(30));
 
-        userRepository.save(me);
-        userRepository.save(other);
+        userRepository.save(this.firstUser);
+        userRepository.save(this.secondUser);
     }
 
     @Test
@@ -85,9 +83,13 @@ public class TransferControllerIntegrationTest {
                         .content(transferMoneyJson)
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.amount").value(transferMoneyRequest.getAmount()))
-                .andExpect(jsonPath("$.fromUser.email").value(FIRST_USER_EMAIL))
-                .andExpect(jsonPath("$.toUser.email").value(SECOND_USER_EMAIL));
+                .andExpect(jsonPath("$.fromUser.firstName").value(this.firstUser.getFirstName()))
+                .andExpect(jsonPath("$.fromUser.lastName").value(this.firstUser.getLastName()))
+                .andExpect(jsonPath("$.fromUser.cpf").value(this.firstUser.getCpf()))
+                .andExpect(jsonPath("$.toUser.firstName").value(this.secondUser.getFirstName()))
+                .andExpect(jsonPath("$.toUser.lastName").value(this.secondUser.getLastName()))
+                .andExpect(jsonPath("$.toUser.cpf").value(this.secondUser.getCpf()))
+                .andExpect(jsonPath("$.amount").value(transferMoneyRequest.getAmount()));
     }
 
     @Test

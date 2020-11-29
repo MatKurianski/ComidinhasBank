@@ -16,7 +16,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String cpf) throws UsernameNotFoundException {
-        User user = userRepository.getUserByCpf(cpf);
+        User user = userRepository.findByCpf(cpf);
 
         if (user == null) {
             throw new UsernameNotFoundException("Could not find user");

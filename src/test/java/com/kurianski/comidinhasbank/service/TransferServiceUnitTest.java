@@ -5,7 +5,6 @@ import com.kurianski.comidinhasbank.model.Transaction;
 import com.kurianski.comidinhasbank.model.User;
 import com.kurianski.comidinhasbank.model.enumerables.Gender;
 import com.kurianski.comidinhasbank.model.request.TransferMoneyRequest;
-import com.kurianski.comidinhasbank.model.request.UserCreationRequest;
 import com.kurianski.comidinhasbank.repository.TransactionRepository;
 import com.kurianski.comidinhasbank.repository.UserRepository;
 import org.junit.Before;
@@ -14,13 +13,18 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.math.BigDecimal;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThrows;
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -61,25 +65,42 @@ public class TransferServiceUnitTest {
         me.setAmount(BigDecimal.valueOf(50));
         other.setAmount(BigDecimal.valueOf(30));
 
-        when(userRepository.getUserByCpf(FIRST_USER_CPF)).thenReturn(me);
-        when(userRepository.getUserByCpf(SECOND_USER_CPF)).thenReturn(other);
+        when(userRepository.findByCpf(FIRST_USER_CPF)).thenReturn(me);
+        when(userRepository.findByCpf(SECOND_USER_CPF)).thenReturn(other);
+
+        when(transactionRepository.save(any(Transaction.class))).then(returnsFirstArg());
+
+        // Authentication Mock
+        Authentication authentication = mock(Authentication.class);
+        SecurityContext securityContext = mock(SecurityContext.class);
+
+        SecurityContextHolder.setContext(securityContext);
+
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn(FIRST_USER_CPF);
     }
 
     @Test
     public void makeValidTransfer() {
-        transferMoneyService.transferMoneyWithCpf(FIRST_USER_CPF, new TransferMoneyRequest(SECOND_USER_CPF, BigDecimal.TEN));
+        BigDecimal amount = BigDecimal.TEN;
 
-        User me = userRepository.getUserByCpf(FIRST_USER_CPF);
-        User other = userRepository.getUserByCpf(SECOND_USER_CPF);
+        Transaction transaction = transferMoneyService.transferMoneyWithCpf(new TransferMoneyRequest(SECOND_USER_CPF, amount));
+
+        User me = userRepository.findByCpf(FIRST_USER_CPF);
+        User other = userRepository.findByCpf(SECOND_USER_CPF);
 
         assertThat(me.getAmount(), equalTo(BigDecimal.valueOf(40)));
         assertThat(other.getAmount(), equalTo(BigDecimal.valueOf(40)));
+
+        assertThat(transaction.getFromUser().getCpf(), equalTo(me.getCpf()));
+        assertThat(transaction.getToUser().getCpf(), equalTo(other.getCpf()));
+        assertThat(transaction.getAmount(), equalTo(amount));
     }
 
     @Test
     public void makeInvalidTransfer() {
         Exception exception = assertThrows(InsufficientFundsException.class, () -> {
-            transferMoneyService.transferMoneyWithCpf(FIRST_USER_CPF, new TransferMoneyRequest(SECOND_USER_CPF, BigDecimal.valueOf(2000)));
+            transferMoneyService.transferMoneyWithCpf(new TransferMoneyRequest(SECOND_USER_CPF, BigDecimal.valueOf(2000)));
         });
         assertThat(exception.getMessage(), equalTo("Saldo insuficiente"));
     }

@@ -1,8 +1,10 @@
 package com.kurianski.comidinhasbank.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.kurianski.comidinhasbank.model.Transaction;
 import com.kurianski.comidinhasbank.model.request.TransferMoneyRequest;
 import com.kurianski.comidinhasbank.model.request.UserCreationRequest;
+import com.kurianski.comidinhasbank.model.view.UserView;
 import com.kurianski.comidinhasbank.service.TransferMoneyService;
 import com.kurianski.comidinhasbank.service.UserService;
 import lombok.NonNull;
@@ -29,9 +31,9 @@ public class TransferMoneyController {
     private TransferMoneyService transferMoneyService;
 
     @PostMapping("/cpf")
+    @JsonView(UserView.Detailed.class)
     public ResponseEntity transferMoneyWithCpf(@RequestBody @NonNull @Valid TransferMoneyRequest transferMoneyRequest) {
-        String fromCpf = SecurityContextHolder.getContext().getAuthentication().getName();
-        Transaction result = transferMoneyService.transferMoneyWithCpf(fromCpf, transferMoneyRequest);
+        Transaction result = transferMoneyService.transferMoneyWithCpf(transferMoneyRequest);
         return ResponseEntity.ok(result);
     }
 }

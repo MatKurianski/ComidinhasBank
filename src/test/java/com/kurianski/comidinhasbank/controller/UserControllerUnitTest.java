@@ -8,26 +8,15 @@ import com.kurianski.comidinhasbank.repository.UserRepository;
 import com.kurianski.comidinhasbank.service.UserService;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -80,9 +69,10 @@ public class UserControllerUnitTest {
                         .content(userJson)
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.firstName").value("Matheus"))
-                .andExpect(jsonPath("$.lastName").value("Kurianski"))
-                .andExpect(jsonPath("$.gender").value("MALE"))
-                .andExpect(jsonPath("$.email").value("matheuskurianski@usp.br"));
+                .andExpect(jsonPath("$.bankAccountNumber").isNotEmpty())
+                .andExpect(jsonPath("$.firstName").value(userCreationRequest.getFirstName()))
+                .andExpect(jsonPath("$.lastName").value(userCreationRequest.getLastName()))
+                .andExpect(jsonPath("$.cpf").value(userCreationRequest.getCpf()))
+                .andExpect(jsonPath("$.password").doesNotExist());
     }
 }

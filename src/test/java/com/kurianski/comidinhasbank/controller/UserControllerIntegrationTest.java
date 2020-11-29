@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurianski.comidinhasbank.model.User;
 import com.kurianski.comidinhasbank.model.enumerables.Gender;
 import com.kurianski.comidinhasbank.model.request.UserCreationRequest;
-import com.kurianski.comidinhasbank.repository.UserRepository;
 import com.kurianski.comidinhasbank.service.UserService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -40,18 +39,14 @@ public class UserControllerIntegrationTest {
         private final String password;
     }
 
-    private final String FAKE_CPF = "76370811092";
-    private final String FAKE_PASSWORD = "da@bS122";
+    private static final String FAKE_CPF = "76370811092";
+    private static final String FAKE_PASSWORD = "da@bS122";
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private UserService userService;
-
-
-    @Autowired
-    private UserRepository userRepository;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -64,13 +59,6 @@ public class UserControllerIntegrationTest {
         newUser.setCpf(FAKE_CPF);
         newUser.setEmail("matheuskurianski@usp.br");
         return newUser;
-    }
-
-    @Before
-    public void setUp() {
-        UserCreationRequest userCreationRequest = makeValidUser();
-        User user = new User();
-        BeanUtils.copyProperties(userCreationRequest, user);
     }
 
     @Test
@@ -86,10 +74,11 @@ public class UserControllerIntegrationTest {
                         .content(userJson)
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.firstName").value("Matheus"))
-                .andExpect(jsonPath("$.lastName").value("Kurianski"))
-                .andExpect(jsonPath("$.gender").value("MALE"))
-                .andExpect(jsonPath("$.email").value("matheuskurianski@usp.br"));
+                .andExpect(jsonPath("$.bankAccountNumber").isNotEmpty())
+                .andExpect(jsonPath("$.firstName").value(userCreationRequest.getFirstName()))
+                .andExpect(jsonPath("$.lastName").value(userCreationRequest.getLastName()))
+                .andExpect(jsonPath("$.cpf").value(userCreationRequest.getCpf()))
+                .andExpect(jsonPath("$.password").doesNotExist());
     }
 
     @Test
